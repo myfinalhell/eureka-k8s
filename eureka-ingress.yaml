@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: eureka
+spec:
+  rules:
+  - host: eureka.sll.test
+    http:
+      paths:
+      - backend:
+          serviceName: eureka
+          servicePort: 8761
+        path: /
+        pathType: ImplementationSpecific
+        
