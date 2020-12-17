@@ -1,84 +1,82 @@
-apiVersion: v1
-items:
-- apiVersion: apps/v1
-  kind: StatefulSet
-  metadata:
-    labels:
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: eureka
+  name: eureka
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
       app: eureka
-    name: eureka
-  spec:
-    podManagementPolicy: OrderedReady
-    replicas: 1
-    revisionHistoryLimit: 10
-    selector:
-      matchLabels:
+  serviceName: eureka
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
         app: eureka
-    serviceName: eureka
-    template:
-      metadata:
-        creationTimestamp: null
-        labels:
-          app: eureka
-      spec:
-        containers:
-        - env:
-          - name: MY_NODE_NAME
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: spec.nodeName
-          - name: MY_POD_NAME
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.name
-          - name: MY_POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.namespace
-          - name: MY_POD_IP
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: status.podIP
-          - name: MY_IN_SERVICE_NAME
-            value: eureka
-          - name: EUREKA_APPLICATION_NAME
-            value: eureka
-          - name: EUREKA_REPLICAS
-            value: "1"
-          - name: USERNAME
-            value: admin
-          - name: PASSWORD
-            value: admin
-          - name: ENVIRONMENT
-            value: master
-          image: harbor-dev.fuchuang.tech/base-img/eureka:v0.1.0
-          imagePullPolicy: Always
-          name: eureka
-          ports:
-          - containerPort: 8761
-            name: http
-            protocol: TCP
-          resources:
-            limits:
-              cpu: 200m
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 200Mi
-          securityContext: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
-        schedulerName: default-scheduler
+    spec:
+      containers:
+      - env:
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: MY_IN_SERVICE_NAME
+          value: eureka
+        - name: EUREKA_APPLICATION_NAME
+          value: eureka
+        - name: EUREKA_REPLICAS
+          value: "1"
+        - name: USERNAME
+          value: admin
+        - name: PASSWORD
+          value: admin
+        - name: ENVIRONMENT
+          value: master
+        image: harbor-dev.fuchuang.tech/base-img/eureka:v0.1.0
+        imagePullPolicy: Always
+        name: eureka
+        ports:
+        - containerPort: 8761
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
         securityContext: {}
-        serviceAccount: default
-        serviceAccountName: default
-        terminationGracePeriodSeconds: 10
-    updateStrategy:
-      rollingUpdate:
-        partition: 0
-      type: RollingUpdate
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 10
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
